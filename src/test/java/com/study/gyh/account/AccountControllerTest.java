@@ -47,7 +47,7 @@ class AccountControllerTest {
             .andExpect(view().name("account/checked-email"));
     }
 
-    @DisplayName("인증 메일 확인 - 입력값 오류")
+    @DisplayName("인증 메일 확인 - 입력값 정상")
     @Test
     void checkEmailToken() throws Exception {
         Account account = Account.builder()
