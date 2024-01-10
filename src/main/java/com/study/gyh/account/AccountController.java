@@ -1,6 +1,7 @@
 package com.study.gyh.account;
 
 import com.study.gyh.domain.Account;
+import java.time.LocalDateTime;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -16,8 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 @RequiredArgsConstructor
 public class AccountController {
+
     private final SignUpFormValidator signUpFormValidator;
     private final AccountService accountService;
+    private final AccountRepository accountRepository;
+
     @InitBinder("signUpForm")
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(signUpFormValidator);
@@ -35,9 +39,29 @@ public class AccountController {
         if (errors.hasErrors()) {
             return "account/sign-up";
         }
+        Account account = new Account();
         accountService.processNewAccount(signUpForm);
         return "redirect:/";
     }
 
+    @GetMapping("/check-email-token")
+    public String checkEmailtoken(String token, String email, Model model) {
+        Account account = accountRepository.findByEmail(email);
+        String view = "account/checked-email";
+        if (account == null) {
+            model.addAttribute("error", "wrong,email");
+            return view;
+        }
 
+        if (!account.getEmailCheckToken().equals(token)) {
+            model.addAttribute("error", "wrong.token");
+            return view;
+        }
+
+        account.completeSignUp();
+
+        model.addAttribute("numberOfUser", accountRepository.count());
+        model.addAttribute("nickname", account.getNickname());
+        return view;
+    }
 }

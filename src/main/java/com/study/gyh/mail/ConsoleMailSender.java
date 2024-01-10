@@ -1,4 +1,4 @@
-package com.study.gyh;
+package com.study.gyh.mail;
 
 import java.io.InputStream;
 import javax.mail.internet.MimeMessage;
