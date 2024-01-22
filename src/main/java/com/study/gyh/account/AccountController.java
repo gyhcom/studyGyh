@@ -4,6 +4,7 @@ import com.study.gyh.domain.Account;
 import java.time.LocalDateTime;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.dom4j.rule.Mode;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
@@ -81,5 +83,17 @@ public class AccountController {
 
         accountService.sendSignUpConfirmEmail(account);
         return "redirect:/";
+    }
+
+    @GetMapping("/profile/{nickname}")
+    public String viewProfile(@PathVariable String nickname, Model model,
+        @CurrentUser Account account) {
+        Account byNickname = accountRepository.findByNickname(nickname);
+        if (byNickname == null) {
+            throw  new IllegalArgumentException(nickname + "에 해당하는 사용자가 없습니다.");
+        }
+        model.addAttribute(byNickname);
+        model.addAttribute("isOwner", byNickname.equals(account));
+        return "account/profile";
     }
 }
