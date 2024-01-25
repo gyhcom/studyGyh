@@ -1,6 +1,7 @@
 package com.study.gyh.account;
 
 import com.study.gyh.domain.Account;
+import com.study.gyh.settings.Profile;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -80,5 +81,18 @@ public class AccountService implements UserDetailsService {
     public void completeSignUp(Account account) {
         account.completeSignUp();
         login(account);
+    }
+
+    public void updateProfile(Account account, Profile profile) {
+        account.setUrl(profile.getUrl());
+        account.setOccupation(profile.getOccupation());
+        account.setLocation(profile.getLocation());
+        account.setBio(profile.getBio());
+        // Todo 프로필 이미지
+
+        //@Transactional 과 별개로 Repository Save를 해주지 않으면
+        //위의 업데이트는 저장되지 않는다 detach 상태이기 때문에
+        accountRepository.save(account);
+
     }
 }

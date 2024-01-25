@@ -2,8 +2,10 @@ package com.study.gyh.settings;
 
 import com.study.gyh.domain.Account;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class Profile {
     private String bio;
 
