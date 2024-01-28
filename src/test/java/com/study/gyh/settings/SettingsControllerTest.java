@@ -96,4 +96,19 @@ class SettingsControllerTest {
             .andExpect(model().attributeExists("account"))
             .andExpect(model().attributeExists("passwordForm"));
     }
+
+
+    @WithAccount("gyh")
+    @DisplayName("패스워드 수정 - 입력값 정상")
+    @Test
+    void updatePassWord_success() throws Exception {
+        mockMvc.perform(post(SettingsController.SETTINGS_PASSWORD_URL)
+                .param("newPassword", "12345678")
+                .param("newPasswordConfirm", "12345678")
+                .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(SettingsController.SETTINGS_PASSWORD_URL))
+            .andExpect(flash().attributeExists("message"));
+
+    }
 }
