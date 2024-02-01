@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,9 +28,10 @@ public class AccountController {
 
 
     @GetMapping("/sign-up")
-    public String signUpForm(Model model) {
-        model.addAttribute(new SignUpForm());
-        return "account/sign-up";
+    public ModelAndView signUpForm(ModelAndView model) {
+        model.addObject(new SignUpForm());
+        model.setViewName("account/sign-up");
+        return model;
     }
 
     @PostMapping("/sign-up")
