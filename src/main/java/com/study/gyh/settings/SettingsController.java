@@ -18,12 +18,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class SettingsController {
 
+    //Todo modelMapper를 통해 값 담기
 
-
-    @InitBinder("passwordForm")
-    public void initBinder(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(new PasswordFormValidator());
-    }
 
     static final String SETTINGS_PROFILE_VIEW_NAME = "settings/profile";
     static final String SETTINGS_PROFILE_URL = "/settings/profile";
@@ -35,6 +31,10 @@ public class SettingsController {
 
 
     private final AccountService accountService;
+    @InitBinder("passwordForm")
+    public void initBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(new PasswordFormValidator());
+    }
 
     @GetMapping(SETTINGS_PROFILE_URL)
     public String updateProfileForm(@CurrentUser Account account, Model model) {

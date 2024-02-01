@@ -5,6 +5,7 @@ import com.study.gyh.settings.Notifications;
 import com.study.gyh.settings.Profile;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +26,7 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
-
+    private final ModelMapper modelMapper;
 //    @Transactional//Todo @Transactional 붙이지 않으면 에러가 남 persist 상태와 detached 상태에 대해 공부
     public Account processNewAccount(SignUpForm signUpForm) {
         Account newAccount = saveNewAccount(signUpForm);
@@ -84,11 +85,14 @@ public class AccountService implements UserDetailsService {
     }
 
     public void updateProfile(Account account, Profile profile) {
+        modelMapper.map(profile, account);
+        /*modelMapper 도입으로 일일이 지정해줄 필요가 없음
         account.setUrl(profile.getUrl());
         account.setOccupation(profile.getOccupation());
         account.setLocation(profile.getLocation());
         account.setBio(profile.getBio());
         account.setProfileImage(profile.getProfileImage());
+        */
         //@Transactional 과 별개로 Repository Save를 해주지 않으면
         //위의 업데이트는 저장되지 않는다 detach 상태이기 때문에
         accountRepository.save(account);
@@ -101,12 +105,15 @@ public class AccountService implements UserDetailsService {
     }
 
     public void updateNotifications(Account account, Notifications notifications) {
+        modelMapper.map(notifications, account);
+        /*modelMapper 도입으로 일일이 지정해줄 필요가 없다
         account.setStudyCreatedByWeb(notifications.isStudyCreatedByWeb());
         account.setStudyCreatedByEmail(notifications.isStudyCreatedByEmail());
         account.setStudyUpdatedByWeb(notifications.isStudyUpdatedByWeb());
         account.setStudyUpdatedByEmail(notifications.isStudyUpdatedByEmail());
         account.setStudyEnrollmentResultByEmail(notifications.isStudyEnrollmentResultByEmail());
         account.setStudyEnrollmentResultByWeb(notifications.isStudyEnrollmentResultByWeb());
+        */
         accountRepository.save(account);
     }
 }
