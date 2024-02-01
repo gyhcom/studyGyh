@@ -16,11 +16,11 @@ public class Notifications {
     private boolean studyUpdatedByWeb;
 
     public Notifications(Account account) {
-        this.studyCreatedByEmail = studyCreatedByEmail;
-        this.studyCreatedByWeb = studyCreatedByWeb;
-        this.studyEnrollmentResultByEmail = studyEnrollmentResultByEmail;
-        this.studyEnrollmentResultByWeb = studyEnrollmentResultByWeb;
-        this.studyUpdatedByEmail = studyUpdatedByEmail;
-        this.studyUpdatedByWeb = studyUpdatedByWeb;
+        this.studyCreatedByEmail = account.isStudyCreatedByEmail();
+        this.studyCreatedByWeb = account.isStudyCreatedByWeb();
+        this.studyEnrollmentResultByEmail = account.isStudyEnrollmentResultByEmail();
+        this.studyEnrollmentResultByWeb = account.isStudyEnrollmentResultByWeb();
+        this.studyUpdatedByEmail = account.isStudyUpdatedByEmail();
+        this.studyUpdatedByWeb = account.isStudyUpdatedByWeb();
     }
 }
