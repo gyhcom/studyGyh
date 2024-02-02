@@ -1,8 +1,8 @@
 package com.study.gyh.account;
 
 import com.study.gyh.domain.Account;
-import com.study.gyh.settings.Notifications;
-import com.study.gyh.settings.Profile;
+import com.study.gyh.settings.form.Notifications;
+import com.study.gyh.settings.form.Profile;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -115,5 +115,11 @@ public class AccountService implements UserDetailsService {
         account.setStudyEnrollmentResultByWeb(notifications.isStudyEnrollmentResultByWeb());
         */
         accountRepository.save(account);
+    }
+
+    public void updateNickname(Account account, String nickname) {
+        account.setNickname(nickname);
+        accountRepository.save(account);
+        login(account);
     }
 }
