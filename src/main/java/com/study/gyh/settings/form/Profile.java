@@ -1,4 +1,4 @@
-package com.study.gyh.settings;
+package com.study.gyh.settings.form;
 
 import com.study.gyh.domain.Account;
 import lombok.Data;

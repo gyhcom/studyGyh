@@ -1,5 +1,6 @@
-package com.study.gyh.settings;
+package com.study.gyh.settings.validator;
 
+import com.study.gyh.settings.form.PasswordForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
