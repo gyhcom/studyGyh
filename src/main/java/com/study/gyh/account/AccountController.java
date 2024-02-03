@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -87,10 +88,45 @@ public class AccountController {
         @CurrentUser Account account) {
         Account byNickname = accountRepository.findByNickname(nickname);
         if (byNickname == null) {
-            throw  new IllegalArgumentException(nickname + "에 해당하는 사용자가 없습니다.");
+            throw new IllegalArgumentException(nickname + "에 해당하는 사용자가 없습니다.");
         }
         model.addAttribute(byNickname);
         model.addAttribute("isOwner", byNickname.equals(account));
         return "account/profile";
+    }
+
+    @GetMapping("/email-login")
+    public String emailLoginForm() {
+        return "account/email-login";
+    }
+
+    @PostMapping("/email-login")
+    public String sendEmailLoginLink(String email, Model model, RedirectAttributes attributes) {
+        Account account = accountRepository.findByEmail(email);
+        if (account == null) {
+            model.addAttribute("error", "유효한 이메일 주소가 아닙니다.");
+            return "account/email-login";
+        }
+
+        if (!account.canSEndConfirmEmail()) {
+            model.addAttribute("error", "이메일 로그인은 1시간 뒤에 사용할 수 있습니다.");
+            //return "account/email-login";
+        }
+
+        accountService.sendLoginLink(account);
+        attributes.addFlashAttribute("message", "이메일 인증 메일을 발송했습니다.");
+        return "redirect:/email-login";
+    }
+    @GetMapping("/login-by-email")
+    public String loginByEmail(String token, String email, Model model) {
+        Account account = accountRepository.findByEmail(email);
+        String view = "account/logged-in-by-email";
+        if (account == null || !account.isValidToken(token)) {
+            model.addAttribute("error", "로그인 할 수 없습니다.");
+            return view;
+        }
+
+        accountService.login(account);
+        return view;
     }
 }
