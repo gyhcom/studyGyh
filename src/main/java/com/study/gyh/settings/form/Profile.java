@@ -1,3 +1,4 @@
+/* (C)2024 */
 package com.study.gyh.settings.form;
 
 import com.study.gyh.domain.Account;
@@ -21,6 +22,7 @@ public class Profile {
     private String location;
 
     private String profileImage;
+
     public Profile(Account account) {
         this.bio = account.getBio();
         this.url = account.getUrl();

@@ -1,5 +1,7 @@
+/* (C)2024 */
 package com.study.gyh.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -18,7 +20,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Tag {
-    @Id @GeneratedValue
-    private Long id;
-    private String title;
+    @Id @GeneratedValue private Long id;
+    @Column private String title;
 }

@@ -1,3 +1,4 @@
+/* (C)2024 */
 package com.study.gyh.settings;
 
 import com.study.gyh.account.AccountService;
@@ -25,8 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class SettingsController {
 
-    //Todo modelMapper를 통해 값 담기
-
+    // Todo modelMapper를 통해 값 담기
 
     static final String SETTINGS_PROFILE_VIEW_NAME = "settings/profile";
     static final String SETTINGS_PROFILE_URL = "/settings/profile";
@@ -60,8 +60,12 @@ public class SettingsController {
     }
 
     @PostMapping(SETTINGS_PROFILE_URL)
-    public String updateProfile(@CurrentUser Account account,
-        @Valid Profile profile, Errors errors, Model model, RedirectAttributes attributes) {
+    public String updateProfile(
+            @CurrentUser Account account,
+            @Valid Profile profile,
+            Errors errors,
+            Model model,
+            RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             return SETTINGS_PROFILE_VIEW_NAME;
@@ -81,8 +85,12 @@ public class SettingsController {
     }
 
     @PostMapping(SETTINGS_PASSWORD_URL)
-    public String updatePassword(@CurrentUser Account account, @Valid PasswordForm passwordForm,
-        Errors errors, Model model, RedirectAttributes attributes) {
+    public String updatePassword(
+            @CurrentUser Account account,
+            @Valid PasswordForm passwordForm,
+            Errors errors,
+            Model model,
+            RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             return SETTINGS_PASSWORD_VIEW_NAME;
@@ -101,9 +109,12 @@ public class SettingsController {
     }
 
     @PostMapping(SETTINGS_NOTIFICATIONS_URL)
-    public String updateNotifications(@CurrentUser Account account,
-        @Valid Notifications notifications, Errors errors, Model model,
-        RedirectAttributes attributes) {
+    public String updateNotifications(
+            @CurrentUser Account account,
+            @Valid Notifications notifications,
+            Errors errors,
+            Model model,
+            RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             return SETTINGS_NOTIFICATIONS_VIEW_NAME;
@@ -115,15 +126,20 @@ public class SettingsController {
     }
 
     @GetMapping(SETTINGS_ACCOUNT_URL)
-    //Todo modelMapper 적용
+    // Todo modelMapper 적용
     public String updateAccountForm(@CurrentUser Account account, Model model) {
         model.addAttribute(account);
         model.addAttribute(modelMapper.map(account, NicknameForm.class));
         return SETTINGS_ACCOUNT_VIEW_NAME;
     }
+
     @PostMapping(SETTINGS_ACCOUNT_URL)
-    public String updateAccount(@CurrentUser Account account, @Valid NicknameForm nicknameForm,
-        Errors errors, Model model, RedirectAttributes attributes) {
+    public String updateAccount(
+            @CurrentUser Account account,
+            @Valid NicknameForm nicknameForm,
+            Errors errors,
+            Model model,
+            RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             return SETTINGS_ACCOUNT_VIEW_NAME;
