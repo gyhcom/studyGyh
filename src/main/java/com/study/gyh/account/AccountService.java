@@ -2,9 +2,11 @@
 package com.study.gyh.account;
 
 import com.study.gyh.domain.Account;
+import com.study.gyh.domain.Tag;
 import com.study.gyh.settings.form.Notifications;
 import com.study.gyh.settings.form.Profile;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
@@ -142,5 +144,10 @@ public class AccountService implements UserDetailsService {
                         + "&email="
                         + account.getEmail());
         javaMailSender.send(mailMessage);
+    }
+
+    public void addTag(Account account, Tag tag) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.ifPresent(a-> a.getTags().add(tag));
     }
 }
