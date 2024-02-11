@@ -1,3 +1,4 @@
+/* (C)2024 */
 package com.study.gyh.settings.form;
 
 import lombok.Data;
@@ -7,6 +8,7 @@ import org.hibernate.validator.constraints.Length;
 public class PasswordForm {
     @Length(min = 8, max = 50)
     private String newPassword;
+
     @Length(min = 8, max = 50)
     private String newPasswordConfirm;
 }

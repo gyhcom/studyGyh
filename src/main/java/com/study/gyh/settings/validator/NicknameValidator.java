@@ -1,3 +1,4 @@
+/* (C)2024 */
 package com.study.gyh.settings.validator;
 
 import com.study.gyh.account.AccountRepository;
@@ -22,7 +23,7 @@ public class NicknameValidator implements Validator {
         NicknameForm nicknameForm = (NicknameForm) target;
         Account byNickname = accountRepository.findByNickname(nicknameForm.getNickname());
         if (byNickname != null) {
-            errors.rejectValue("nickname","wrong.value","입력하신 닉네임을 사용할 수 없습니다.");
+            errors.rejectValue("nickname", "wrong.value", "입력하신 닉네임을 사용할 수 없습니다.");
         }
     }
 }

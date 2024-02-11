@@ -1,3 +1,4 @@
+/* (C)2024 */
 package com.study.gyh.account;
 
 import com.study.gyh.domain.Account;
@@ -26,7 +27,6 @@ public class AccountController {
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(signUpFormValidator);
     }
-
 
     @GetMapping("/sign-up")
     public ModelAndView signUpForm(ModelAndView model) {
@@ -84,8 +84,8 @@ public class AccountController {
     }
 
     @GetMapping("/profile/{nickname}")
-    public String viewProfile(@PathVariable String nickname, Model model,
-        @CurrentUser Account account) {
+    public String viewProfile(
+            @PathVariable String nickname, Model model, @CurrentUser Account account) {
         Account byNickname = accountRepository.findByNickname(nickname);
         if (byNickname == null) {
             throw new IllegalArgumentException(nickname + "에 해당하는 사용자가 없습니다.");
@@ -110,13 +110,14 @@ public class AccountController {
 
         if (!account.canSEndConfirmEmail()) {
             model.addAttribute("error", "이메일 로그인은 1시간 뒤에 사용할 수 있습니다.");
-            //return "account/email-login";
+            // return "account/email-login";
         }
 
         accountService.sendLoginLink(account);
         attributes.addFlashAttribute("message", "이메일 인증 메일을 발송했습니다.");
         return "redirect:/email-login";
     }
+
     @GetMapping("/login-by-email")
     public String loginByEmail(String token, String email, Model model) {
         Account account = accountRepository.findByEmail(email);

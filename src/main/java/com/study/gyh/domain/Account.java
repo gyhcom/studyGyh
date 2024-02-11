@@ -1,6 +1,8 @@
+/* (C)2024 */
 package com.study.gyh.domain;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -9,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -25,9 +28,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Account {
 
-    @Id
-    @GeneratedValue
-    private Long id;
+    @Id @GeneratedValue private Long id;
 
     @Column(unique = true)
     private String email;
@@ -53,20 +54,23 @@ public class Account {
 
     // 기본적으로 String은 varchar(255)로 매팽된다.
     // 이미지는 그거보다 사이즈가 커지기 때문에 Lob로 매핑으로 해준다.
-    @Lob @Basic(fetch = FetchType.EAGER)
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
     private String profileImage;
 
     private boolean studyCreatedByEmail;
 
-    private boolean studyCreatedByWeb =true;
+    private boolean studyCreatedByWeb = true;
 
     private boolean studyEnrollmentResultByEmail;
 
-    private boolean studyEnrollmentResultByWeb =true;
+    private boolean studyEnrollmentResultByWeb = true;
 
     private boolean studyUpdatedByWeb = true;
     private boolean studyUpdatedByEmail;
     private LocalDateTime emailCheckTokenGeneratedAt;
+
+    @ManyToMany private Set<Tag> tags;
 
     public void generateEmailCheckToken() {
         this.emailCheckToken = UUID.randomUUID().toString();
@@ -85,5 +89,4 @@ public class Account {
     public boolean canSEndConfirmEmail() {
         return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusMinutes(5));
     }
-
 }
