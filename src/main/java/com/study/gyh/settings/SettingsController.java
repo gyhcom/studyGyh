@@ -1,6 +1,8 @@
 /* (C)2024 */
 package com.study.gyh.settings;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.gyh.account.AccountService;
 import com.study.gyh.account.CurrentUser;
 import com.study.gyh.domain.Account;
@@ -13,6 +15,7 @@ import com.study.gyh.settings.form.TagForm;
 import com.study.gyh.settings.validator.NicknameValidator;
 import com.study.gyh.settings.validator.PasswordFormValidator;
 import com.study.gyh.tag.TagRepository;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -54,7 +57,10 @@ public class SettingsController {
     private final ModelMapper modelMapper;
     private final TagRepository tagRepository;
 
+    private final ObjectMapper objectMapper;
+
     @InitBinder("passwordForm")
+
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(new PasswordFormValidator());
     }
@@ -163,10 +169,16 @@ public class SettingsController {
     }
 
     @GetMapping(SETTINGS_TAGS_URL)
-    public String updateTags(@CurrentUser Account account, Model model) {
+    public String updateTags(@CurrentUser Account account, Model model)
+        throws JsonProcessingException {
         model.addAttribute(account);
         Set<Tag> tags = accountService.getTags(account);
         model.addAttribute("tags", tags.stream().map(Tag::getTitle).collect(Collectors.toList()));
+
+        List<String> allTags = tagRepository.findAll().stream().map(Tag::getTitle)
+            .collect(Collectors.toList());
+        model.addAttribute("whitelist", objectMapper.writeValueAsString(allTags));
+
         return SETTINGS_TAGS_VIEW_NAME;
     }
 
