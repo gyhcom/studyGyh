@@ -7,6 +7,7 @@ import com.study.gyh.settings.form.Notifications;
 import com.study.gyh.settings.form.Profile;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
@@ -148,6 +149,16 @@ public class AccountService implements UserDetailsService {
 
     public void addTag(Account account, Tag tag) {
         Optional<Account> byId = accountRepository.findById(account.getId());
-        byId.ifPresent(a-> a.getTags().add(tag));
+        byId.ifPresent(a -> a.getTags().add(tag));
+    }
+
+    public Set<Tag> getTags(Account account) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        return byId.orElseThrow().getTags();
+    }
+
+    public void removeTag(Account account, Tag tag) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.ifPresent(a -> a.getTags().remove(tag));
     }
 }

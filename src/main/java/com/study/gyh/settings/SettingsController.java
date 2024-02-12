@@ -13,6 +13,8 @@ import com.study.gyh.settings.form.TagForm;
 import com.study.gyh.settings.validator.NicknameValidator;
 import com.study.gyh.settings.validator.PasswordFormValidator;
 import com.study.gyh.tag.TagRepository;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -47,11 +49,11 @@ public class SettingsController {
     static final String SETTINGS_TAGS_VIEW_NAME = "settings/tags";
     static final String SETTINGS_TAGS_URL = "/" + SETTINGS_TAGS_VIEW_NAME;
 
-
     private final AccountService accountService;
     private final NicknameValidator nicknameValidator;
     private final ModelMapper modelMapper;
     private final TagRepository tagRepository;
+
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(new PasswordFormValidator());
@@ -163,20 +165,23 @@ public class SettingsController {
     @GetMapping(SETTINGS_TAGS_URL)
     public String updateTags(@CurrentUser Account account, Model model) {
         model.addAttribute(account);
+        Set<Tag> tags = accountService.getTags(account);
+        model.addAttribute("tags", tags.stream().map(Tag::getTitle).collect(Collectors.toList()));
         return SETTINGS_TAGS_VIEW_NAME;
     }
 
-    @PostMapping("/settings/tags/add")
+    @PostMapping(SETTINGS_TAGS_URL + "/add")
     @ResponseBody
     public ResponseEntity addTag(@CurrentUser Account account, @RequestBody TagForm tagForm) {
         String title = tagForm.getTagTitle();
-        //Tag로 받아도 되고 Optional로 받아도 된다.
-        //Optional<Tag> tag = tagRepository.findById(title);
+        // Tag로 받아도 되고 Optional로 받아도 된다.
+        // Optional<Tag> tag = tagRepository.findById(title);
 
-//        Tag tag = tagRepository.findByTitle(title)
-//            .orElseGet(() -> tagRepository.save(Tag.builder()
-//                .title(tagForm.getTagTitle())
-//                .build()));
+        // Todo 왜 orElseGet이 안 먹지??...옵셔널이 아니라서 그런가..
+        // Tag tag = tagRepository.findByTitle(title)
+        //    .orElseGet(() -> tagRepository.save(Tag.builder()
+        //       .title(tagForm.getTagTitle())
+        //        .build()));
         Tag tag = tagRepository.findByTitle(title);
         if (tag == null) {
             tag = tagRepository.save(Tag.builder().title(tagForm.getTagTitle()).build());
@@ -185,4 +190,17 @@ public class SettingsController {
         accountService.addTag(account, tag);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping(SETTINGS_TAGS_URL + "/remove")
+    @ResponseBody
+    public ResponseEntity removeTag(@CurrentUser Account account, @RequestBody TagForm tagForm) {
+        String title = tagForm.getTagTitle();
+        Tag tag = tagRepository.findByTitle(title);
+        if (tag == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        accountService.removeTag(account, tag);
+        return ResponseEntity.badRequest().build();
+    }
+
 }
