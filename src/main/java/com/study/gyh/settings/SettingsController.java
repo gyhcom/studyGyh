@@ -60,7 +60,6 @@ public class SettingsController {
     private final ObjectMapper objectMapper;
 
     @InitBinder("passwordForm")
-
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(new PasswordFormValidator());
     }
@@ -79,11 +78,11 @@ public class SettingsController {
 
     @PostMapping(SETTINGS_PROFILE_URL)
     public String updateProfile(
-        @CurrentUser Account account,
-        @Valid Profile profile,
-        Errors errors,
-        Model model,
-        RedirectAttributes attributes) {
+            @CurrentUser Account account,
+            @Valid Profile profile,
+            Errors errors,
+            Model model,
+            RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             return SETTINGS_PROFILE_VIEW_NAME;
@@ -104,11 +103,11 @@ public class SettingsController {
 
     @PostMapping(SETTINGS_PASSWORD_URL)
     public String updatePassword(
-        @CurrentUser Account account,
-        @Valid PasswordForm passwordForm,
-        Errors errors,
-        Model model,
-        RedirectAttributes attributes) {
+            @CurrentUser Account account,
+            @Valid PasswordForm passwordForm,
+            Errors errors,
+            Model model,
+            RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             return SETTINGS_PASSWORD_VIEW_NAME;
@@ -128,11 +127,11 @@ public class SettingsController {
 
     @PostMapping(SETTINGS_NOTIFICATIONS_URL)
     public String updateNotifications(
-        @CurrentUser Account account,
-        @Valid Notifications notifications,
-        Errors errors,
-        Model model,
-        RedirectAttributes attributes) {
+            @CurrentUser Account account,
+            @Valid Notifications notifications,
+            Errors errors,
+            Model model,
+            RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             return SETTINGS_NOTIFICATIONS_VIEW_NAME;
@@ -153,11 +152,11 @@ public class SettingsController {
 
     @PostMapping(SETTINGS_ACCOUNT_URL)
     public String updateAccount(
-        @CurrentUser Account account,
-        @Valid NicknameForm nicknameForm,
-        Errors errors,
-        Model model,
-        RedirectAttributes attributes) {
+            @CurrentUser Account account,
+            @Valid NicknameForm nicknameForm,
+            Errors errors,
+            Model model,
+            RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             return SETTINGS_ACCOUNT_VIEW_NAME;
@@ -170,13 +169,13 @@ public class SettingsController {
 
     @GetMapping(SETTINGS_TAGS_URL)
     public String updateTags(@CurrentUser Account account, Model model)
-        throws JsonProcessingException {
+            throws JsonProcessingException {
         model.addAttribute(account);
         Set<Tag> tags = accountService.getTags(account);
         model.addAttribute("tags", tags.stream().map(Tag::getTitle).collect(Collectors.toList()));
 
-        List<String> allTags = tagRepository.findAll().stream().map(Tag::getTitle)
-            .collect(Collectors.toList());
+        List<String> allTags =
+                tagRepository.findAll().stream().map(Tag::getTitle).collect(Collectors.toList());
         model.addAttribute("whitelist", objectMapper.writeValueAsString(allTags));
 
         return SETTINGS_TAGS_VIEW_NAME;
@@ -214,5 +213,4 @@ public class SettingsController {
         accountService.removeTag(account, tag);
         return ResponseEntity.badRequest().build();
     }
-
 }

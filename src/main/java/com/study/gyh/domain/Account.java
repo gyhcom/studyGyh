@@ -2,6 +2,7 @@
 package com.study.gyh.domain;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Basic;
@@ -70,7 +71,7 @@ public class Account {
     private boolean studyUpdatedByEmail;
     private LocalDateTime emailCheckTokenGeneratedAt;
 
-    @ManyToMany private Set<Tag> tags;
+    @ManyToMany private Set<Tag> tags = new HashSet<>();
 
     public void generateEmailCheckToken() {
         this.emailCheckToken = UUID.randomUUID().toString();
