@@ -90,6 +90,8 @@ class SettingsControllerTest {
     @Test
     void removeTag() throws Exception {
         // TODO: 테스트 실패 디버거 해봐라 ^_^ 그래야 실력이 늘지
+        // 멍청한 짓을 했다. /remove 메소드 호출할때 ResponseEntity를 badRequest로 리턴을 줘서 안됬다..굉장히 멍청하게
+        // 소스를 다시 한번 꼼꼼히 보고.. 했는데.. 간단한걸 놓쳐서 2시간 고생했다..
         Account gyh = accountRepository.findByNickname("gyh");
         Tag newTag = tagRepository.save(Tag.builder().title("newTag").build());
         accountService.addTag(gyh, newTag);
