@@ -207,10 +207,11 @@ public class SettingsController {
     public ResponseEntity removeTag(@CurrentUser Account account, @RequestBody TagForm tagForm) {
         String title = tagForm.getTagTitle();
         Tag tag = tagRepository.findByTitle(title);
+        System.out.println(tag);
         if (tag == null) {
             return ResponseEntity.badRequest().build();
         }
         accountService.removeTag(account, tag);
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().build();
     }
 }
