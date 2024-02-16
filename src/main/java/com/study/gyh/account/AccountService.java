@@ -3,8 +3,10 @@ package com.study.gyh.account;
 
 import com.study.gyh.domain.Account;
 import com.study.gyh.domain.Tag;
+import com.study.gyh.domain.Zone;
 import com.study.gyh.settings.form.Notifications;
 import com.study.gyh.settings.form.Profile;
+import com.study.gyh.zone.ZoneRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,6 +33,7 @@ public class AccountService implements UserDetailsService {
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final ZoneRepository zoneRepository;
 
     //    @Transactional//Todo @Transactional 붙이지 않으면 에러가 남 persist 상태와 detached 상태에 대해 공부
     public Account processNewAccount(SignUpForm signUpForm) {
@@ -131,7 +134,7 @@ public class AccountService implements UserDetailsService {
         account.generateEmailCheckToken();
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(account.getEmail());
-        mailMessage.setSubject("스터디 로그인 링크");
+        mailMessage.setSubject("스터디Gyh 로그인 링크");
         mailMessage.setText(
                 "/login-by-email?token="
                         + account.getEmailCheckToken()
@@ -153,5 +156,21 @@ public class AccountService implements UserDetailsService {
     public void removeTag(Account account, Tag tag) {
         Optional<Account> byId = accountRepository.findById(account.getId());
         byId.ifPresent(a -> a.getTags().remove(tag));
+    }
+
+    public Set<Zone> getZones(Account account) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        return byId.orElseThrow().getZones();
+    }
+
+    public void addZone(Account account, Zone zone) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.ifPresent(a -> a.getZones().add(zone));
+
+    }
+
+    public void removeZone(Account account, Zone zone) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.ifPresent(a -> a.getZones().remove(zone));
     }
 }

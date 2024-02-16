@@ -7,14 +7,17 @@ import com.study.gyh.account.AccountService;
 import com.study.gyh.account.CurrentUser;
 import com.study.gyh.domain.Account;
 import com.study.gyh.domain.Tag;
+import com.study.gyh.domain.Zone;
 import com.study.gyh.settings.form.NicknameForm;
 import com.study.gyh.settings.form.Notifications;
 import com.study.gyh.settings.form.PasswordForm;
 import com.study.gyh.settings.form.Profile;
 import com.study.gyh.settings.form.TagForm;
+import com.study.gyh.settings.form.ZoneForm;
 import com.study.gyh.settings.validator.NicknameValidator;
 import com.study.gyh.settings.validator.PasswordFormValidator;
 import com.study.gyh.tag.TagRepository;
+import com.study.gyh.zone.ZoneRepository;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -52,12 +55,14 @@ public class SettingsController {
     static final String SETTINGS_TAGS_VIEW_NAME = "settings/tags";
     static final String SETTINGS_TAGS_URL = "/" + SETTINGS_TAGS_VIEW_NAME;
 
+    static final String ZONES = "settings/zones";
     private final AccountService accountService;
     private final NicknameValidator nicknameValidator;
     private final ModelMapper modelMapper;
     private final TagRepository tagRepository;
 
     private final ObjectMapper objectMapper;
+    private final ZoneRepository zoneRepository;
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -78,11 +83,11 @@ public class SettingsController {
 
     @PostMapping(SETTINGS_PROFILE_URL)
     public String updateProfile(
-            @CurrentUser Account account,
-            @Valid Profile profile,
-            Errors errors,
-            Model model,
-            RedirectAttributes attributes) {
+        @CurrentUser Account account,
+        @Valid Profile profile,
+        Errors errors,
+        Model model,
+        RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             return SETTINGS_PROFILE_VIEW_NAME;
@@ -103,11 +108,11 @@ public class SettingsController {
 
     @PostMapping(SETTINGS_PASSWORD_URL)
     public String updatePassword(
-            @CurrentUser Account account,
-            @Valid PasswordForm passwordForm,
-            Errors errors,
-            Model model,
-            RedirectAttributes attributes) {
+        @CurrentUser Account account,
+        @Valid PasswordForm passwordForm,
+        Errors errors,
+        Model model,
+        RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             return SETTINGS_PASSWORD_VIEW_NAME;
@@ -127,11 +132,11 @@ public class SettingsController {
 
     @PostMapping(SETTINGS_NOTIFICATIONS_URL)
     public String updateNotifications(
-            @CurrentUser Account account,
-            @Valid Notifications notifications,
-            Errors errors,
-            Model model,
-            RedirectAttributes attributes) {
+        @CurrentUser Account account,
+        @Valid Notifications notifications,
+        Errors errors,
+        Model model,
+        RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             return SETTINGS_NOTIFICATIONS_VIEW_NAME;
@@ -152,11 +157,11 @@ public class SettingsController {
 
     @PostMapping(SETTINGS_ACCOUNT_URL)
     public String updateAccount(
-            @CurrentUser Account account,
-            @Valid NicknameForm nicknameForm,
-            Errors errors,
-            Model model,
-            RedirectAttributes attributes) {
+        @CurrentUser Account account,
+        @Valid NicknameForm nicknameForm,
+        Errors errors,
+        Model model,
+        RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
             return SETTINGS_ACCOUNT_VIEW_NAME;
@@ -169,13 +174,13 @@ public class SettingsController {
 
     @GetMapping(SETTINGS_TAGS_URL)
     public String updateTags(@CurrentUser Account account, Model model)
-            throws JsonProcessingException {
+        throws JsonProcessingException {
         model.addAttribute(account);
         Set<Tag> tags = accountService.getTags(account);
         model.addAttribute("tags", tags.stream().map(Tag::getTitle).collect(Collectors.toList()));
 
         List<String> allTags =
-                tagRepository.findAll().stream().map(Tag::getTitle).collect(Collectors.toList());
+            tagRepository.findAll().stream().map(Tag::getTitle).collect(Collectors.toList());
         model.addAttribute("whitelist", objectMapper.writeValueAsString(allTags));
 
         return SETTINGS_TAGS_VIEW_NAME;
@@ -212,6 +217,47 @@ public class SettingsController {
             return ResponseEntity.badRequest().build();
         }
         accountService.removeTag(account, tag);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(ZONES)
+    public String updateZonesForm(@CurrentUser Account account, Model model)
+        throws JsonProcessingException {
+        model.addAttribute("account");
+
+        Set<Zone> zones = accountService.getZones(account);
+        model.addAttribute("zones",
+            zones.stream().map(Zone::toString).collect(Collectors.toList()));
+
+        List<String> allZones = zoneRepository.findAll().stream().map(Zone::toString)
+            .collect(Collectors.toList());
+        model.addAttribute("whitelist", objectMapper.writeValueAsString(allZones));
+        return "settings/zones";
+    }
+
+    @PostMapping(ZONES + "/add")
+    @ResponseBody
+    public ResponseEntity addZone(@CurrentUser Account account, @RequestBody ZoneForm zoneForm) {
+        Zone zone = zoneRepository.findByCityAndProvince(zoneForm.getCityName(),
+            zoneForm.getProvinceName());
+        if (zone == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        accountService.addZone(account, zone);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(ZONES + "/remove")
+    @ResponseBody
+    public ResponseEntity removeZone(@CurrentUser Account account, @RequestBody ZoneForm zoneForm) {
+        Zone zone = zoneRepository.findByCityAndProvince(zoneForm.getCityName(),
+            zoneForm.getProvinceName());
+        if (zone == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        accountService.removeZone(account, zone);
         return ResponseEntity.ok().build();
     }
 }
