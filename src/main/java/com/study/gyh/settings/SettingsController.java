@@ -18,6 +18,7 @@ import com.study.gyh.settings.validator.NicknameValidator;
 import com.study.gyh.settings.validator.PasswordFormValidator;
 import com.study.gyh.tag.TagRepository;
 import com.study.gyh.zone.ZoneRepository;
+import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,6 +26,8 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -36,6 +39,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ *
+ */
 @Controller
 @RequiredArgsConstructor
 public class SettingsController {
@@ -258,6 +264,24 @@ public class SettingsController {
         }
 
         accountService.removeZone(account, zone);
+        return ResponseEntity.ok().build();
+    }
+    /*
+    * SpringSecurity 에서 사용자 정보 가져오는 방법
+    * */
+    @GetMapping("/test")
+    public ResponseEntity currentUserName(Principal principal) {
+        Object securityContextHolder = SecurityContextHolder.getContext().getAuthentication().getName();
+        Object user = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails) user;
+        String username = ((UserDetails) user).getUsername();
+        String password = ((UserDetails) user).getPassword();
+        System.out.println("securityContextHolder " + securityContextHolder);
+        System.out.println("UserDetail.getUserName " + username);
+        System.out.println("UserDetail " + password);
+
+
+        System.out.println("principal.getname " + principal.getName());
         return ResponseEntity.ok().build();
     }
 }
