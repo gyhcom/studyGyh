@@ -229,7 +229,7 @@ public class SettingsController {
     @GetMapping(ZONES)
     public String updateZonesForm(@CurrentUser Account account, Model model)
         throws JsonProcessingException {
-        model.addAttribute("account");
+        model.addAttribute(account);
 
         Set<Zone> zones = accountService.getZones(account);
         model.addAttribute("zones",
