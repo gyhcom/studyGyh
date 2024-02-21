@@ -23,6 +23,7 @@ import com.study.gyh.account.AccountService;
 import com.study.gyh.domain.Account;
 import com.study.gyh.domain.Tag;
 import com.study.gyh.domain.Zone;
+import com.study.gyh.mail.EmailService;
 import com.study.gyh.settings.form.TagForm;
 import com.study.gyh.settings.form.ZoneForm;
 import com.study.gyh.tag.TagRepository;
@@ -34,6 +35,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -45,6 +51,11 @@ class SettingsControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    //현재 테스트 클래스에서 사용하지 않는 Bean지만
+    //넣어주지 않으면 에러가 난다.. SpringBootTest면 에러가 안나야 하는데.. 왜지.
+    @MockBean
+    EmailService emailService;
 
     @Autowired
     AccountRepository accountRepository;
@@ -58,6 +69,18 @@ class SettingsControllerTest {
     AccountService accountService;
     @Autowired
     private ZoneRepository zoneRepository;
+
+    @Autowired
+    RedisTemplate redisTemplate;
+
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    ReactiveRedisTemplate reactiveRedisTemplate;
+
+    @Autowired
+    ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
     private Zone testZone = Zone.builder().city("test").localNameOfCity("테스트시").province("테스트주")
         .build();
@@ -313,11 +336,18 @@ class SettingsControllerTest {
                 .content(objectMapper.writeValueAsString(zoneForm))
                 //Json형식의 String으로 만들기 위해 objectMapper를 사용
                 .with(csrf()))
-                //springsecurity에서는 비정상적인 요청을 관리하기 위해 csrf토큰을 사용하는데
-                //테스트에서는 이런 처리가 필용하지 않아 임의로 csrf토큰을 만들어주는 옵션
+            //springsecurity에서는 비정상적인 요청을 관리하기 위해 csrf토큰을 사용하는데
+            //테스트에서는 이런 처리가 필용하지 않아 임의로 csrf토큰을 만들어주는 옵션
             .andExpect(status().isOk());
-                //Http 200이어야 통과
+        //Http 200이어야 통과
 
         assertFalse(gyh.getZones().contains(zone));
+    }
+
+    @Test
+    void Test() {
+        redisTemplate.opsForValue().set("gyh", "Hello");
+        System.out.println("========="+redisTemplate.opsForValue().get("key"));
+        System.out.println("========="+stringRedisTemplate.opsForValue().get("key"));
     }
 }
