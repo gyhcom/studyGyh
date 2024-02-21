@@ -262,7 +262,7 @@ public class SettingsController {
         if (zone == null) {
             return ResponseEntity.badRequest().build();
         }
-
+        //pnro qrvj peow usit
         accountService.removeZone(account, zone);
         return ResponseEntity.ok().build();
     }

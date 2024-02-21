@@ -59,11 +59,14 @@ class SettingsControllerTest {
     @Autowired
     private ZoneRepository zoneRepository;
 
-    private Zone testZone = Zone.builder().city("test").localNameOfCity("테스트시").province("테스트주").build();
+    private Zone testZone = Zone.builder().city("test").localNameOfCity("테스트시").province("테스트주")
+        .build();
+
     @BeforeEach
     void beforeEach() {
         zoneRepository.save(testZone);
     }
+
     @AfterEach
     void afterEach() {
         accountRepository.deleteAll();
@@ -284,7 +287,37 @@ class SettingsControllerTest {
             .andExpect(status().isOk());
 
         Account gyh = accountRepository.findByNickname("gyh");
-        Zone zone = zoneRepository.findByCityAndProvince(testZone.getCity(), testZone.getProvince());
+        Zone zone = zoneRepository.findByCityAndProvince(testZone.getCity(),
+            testZone.getProvince());
         assertTrue(gyh.getZones().contains(zone));
+    }
+
+    @WithAccount("gyh")
+    @DisplayName("계정의 지역정보 삭제")
+    @Transactional
+    @Test
+    void removeZone() throws Exception {
+        Account gyh = accountRepository.findByNickname("gyh");
+        //사용자 정보 불러옴
+        Zone zone = zoneRepository.findByCityAndProvince(testZone.getCity(),
+            testZone.getProvince());
+        //테스트 케이스 실행할때 입력한 testZone 객체 입력
+        accountService.addZone(gyh, zone);
+        //사용자에게 입력해 테스트 데이터 구축
+
+        ZoneForm zoneForm = new ZoneForm();
+        zoneForm.setZoneName(testZone.toString());
+
+        mockMvc.perform(post("/" + ZONES + "/remove")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(zoneForm))
+                //Json형식의 String으로 만들기 위해 objectMapper를 사용
+                .with(csrf()))
+                //springsecurity에서는 비정상적인 요청을 관리하기 위해 csrf토큰을 사용하는데
+                //테스트에서는 이런 처리가 필용하지 않아 임의로 csrf토큰을 만들어주는 옵션
+            .andExpect(status().isOk());
+                //Http 200이어야 통과
+
+        assertFalse(gyh.getZones().contains(zone));
     }
 }
