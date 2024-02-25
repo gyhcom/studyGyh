@@ -29,8 +29,8 @@ import org.thymeleaf.context.Context;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @Transactional // Todo @Transactional 붙이지 않으면 에러가 남 persist 상태와 detached 상태에 대해 공부
+@RequiredArgsConstructor
 public class AccountService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
@@ -38,7 +38,10 @@ public class AccountService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
     private final TemplateEngine templateEngine;
+    // final로 선언하지 않은것과 @RequiredArgsConstructor 쓰지 않고 생성자 선언의 차이를
+    // 좀 찾아봐야 할꺼 같다.
     private final AppProperties appProperties;
+
     //    @Transactional//Todo @Transactional 붙이지 않으면 에러가 남 persist 상태와 detached 상태에 대해 공부
     public Account processNewAccount(SignUpForm signUpForm) {
         Account newAccount = saveNewAccount(signUpForm);
@@ -56,19 +59,24 @@ public class AccountService implements UserDetailsService {
 
     public void sendSignUpConfirmEmail(Account newAccount) {
         Context context = new Context();
-        context.setVariable("link","/check-email-token?token=" + newAccount.getEmailCheckToken() +
-            "&email=" + newAccount.getEmail());
+        context.setVariable(
+                "link",
+                "/check-email-token?token="
+                        + newAccount.getEmailCheckToken()
+                        + "&email="
+                        + newAccount.getEmail());
         context.setVariable("nickname", newAccount.getNickname());
         context.setVariable("linkName", "이메일 인증하기");
         context.setVariable("message", "StudyGyh를 사용하려면 링크를 클릭하세요");
-        context.setVariable("host",appProperties.getHost());
+        context.setVariable("host", appProperties.getHost());
         String message = templateEngine.process("mail/simple-link", context);
 
-
-        EmailMessage emailMessage = EmailMessage.builder()
-            .to(newAccount.getEmail())
-            .subject("스터디, 회원가입인증")
-            .message(message).build();
+        EmailMessage emailMessage =
+                EmailMessage.builder()
+                        .to(newAccount.getEmail())
+                        .subject("스터디, 회원가입인증")
+                        .message(message)
+                        .build();
 
         emailService.sendEmail(emailMessage);
     }
@@ -142,19 +150,24 @@ public class AccountService implements UserDetailsService {
     public void sendLoginLink(Account account) {
 
         Context context = new Context();
-        context.setVariable("link","/check-email-token?token=" + account.getEmailCheckToken() +
-            "&email=" + account.getEmail());
+        context.setVariable(
+                "link",
+                "/check-email-token?token="
+                        + account.getEmailCheckToken()
+                        + "&email="
+                        + account.getEmail());
         context.setVariable("nickname", account.getNickname());
         context.setVariable("linkname", "이메일 로그인하기");
         context.setVariable("message", "로그인 하려면 아래 링크를 클릭하세요");
-        context.setVariable("host",appProperties.getHost());
+        context.setVariable("host", appProperties.getHost());
         String message = templateEngine.process("mail/simple-link", context);
 
-        EmailMessage emailMessage = EmailMessage.builder()
-            .to(account.getEmail())
-            .subject("스터디, 로그인 링크")
-            .message(message).build();
-
+        EmailMessage emailMessage =
+                EmailMessage.builder()
+                        .to(account.getEmail())
+                        .subject("스터디, 로그인 링크")
+                        .message(message)
+                        .build();
 
         emailService.sendEmail(emailMessage);
     }
@@ -182,7 +195,6 @@ public class AccountService implements UserDetailsService {
     public void addZone(Account account, Zone zone) {
         Optional<Account> byId = accountRepository.findById(account.getId());
         byId.ifPresent(a -> a.getZones().add(zone));
-
     }
 
     public void removeZone(Account account, Zone zone) {
