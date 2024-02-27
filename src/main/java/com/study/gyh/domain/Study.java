@@ -1,6 +1,7 @@
 package com.study.gyh.domain;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -31,10 +32,10 @@ public class Study {
     private Long id;
 
     @ManyToMany
-    private Set<Account> managers;
+    private Set<Account> managers = new HashSet<>();
 
     @ManyToMany
-    private Set<Account> member;
+    private Set<Account> member = new HashSet<>();
 
     @Column(unique = true)
     private String path;
@@ -52,10 +53,10 @@ public class Study {
     private String image;
 
     @ManyToMany
-    private Set<Tag> tags;
+    private Set<Tag> tags = new HashSet<>();
 
     @ManyToMany
-    private Set<Zone> zones;
+    private Set<Zone> zones = new HashSet<>();
 
     private LocalDateTime publishedDateTime;
 
