@@ -13,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -20,6 +22,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NamedEntityGraph(name = "Study.withAllRelations", attributeNodes = { @NamedAttributeNode("tags"),
+    @NamedAttributeNode("zones"), @NamedAttributeNode("managers"), @NamedAttributeNode("member")})
 @Entity
 @Getter
 @Setter
