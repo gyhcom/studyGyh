@@ -1,3 +1,4 @@
+/* (C)2024 */
 package com.study.gyh.study;
 
 import com.study.gyh.domain.Study;
@@ -8,4 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface StudyRepository extends JpaRepository<Study, Long> {
 
     boolean existsByPath(String path);
+
+    Study findByPath(String path);
 }

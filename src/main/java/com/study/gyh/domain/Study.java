@@ -1,5 +1,7 @@
+/* (C)2024 */
 package com.study.gyh.domain;
 
+import com.study.gyh.account.UserAccount;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,15 +29,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Study {
 
-    @Id
-    @GeneratedValue
-    private Long id;
+    @Id @GeneratedValue private Long id;
 
-    @ManyToMany
-    private Set<Account> managers = new HashSet<>();
+    @ManyToMany private Set<Account> managers = new HashSet<>();
 
-    @ManyToMany
-    private Set<Account> member = new HashSet<>();
+    @ManyToMany private Set<Account> member = new HashSet<>();
 
     @Column(unique = true)
     private String path;
@@ -52,11 +50,9 @@ public class Study {
     @Basic(fetch = FetchType.EAGER)
     private String image;
 
-    @ManyToMany
-    private Set<Tag> tags = new HashSet<>();
+    @ManyToMany private Set<Tag> tags = new HashSet<>();
 
-    @ManyToMany
-    private Set<Zone> zones = new HashSet<>();
+    @ManyToMany private Set<Zone> zones = new HashSet<>();
 
     private LocalDateTime publishedDateTime;
 
@@ -74,5 +70,21 @@ public class Study {
 
     public void addManager(Account account) {
         this.managers.add(account);
+    }
+
+    public boolean isJoinable(UserAccount userAccount) {
+        Account account = userAccount.getAccount();
+        return this.isPublished()
+                && this.isRecruiting()
+                && !this.member.contains(account)
+                && !this.managers.contains(account);
+    }
+
+    public boolean isMember(UserAccount userAccount) {
+        return this.member.contains(userAccount.getAccount());
+    }
+
+    public boolean isManager(UserAccount userAccount) {
+        return this.managers.contains(userAccount.getAccount());
     }
 }

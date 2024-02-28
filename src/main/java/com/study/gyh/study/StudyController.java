@@ -1,3 +1,4 @@
+/* (C)2024 */
 package com.study.gyh.study;
 
 import com.study.gyh.account.CurrentUser;
@@ -16,12 +17,14 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 @RequiredArgsConstructor
 public class StudyController {
 
+    private final StudyRepository studyRepository;
     private final StudyService studyService;
     private final ModelMapper modelMapper;
     private final StudyFormValidator studyFormValidator;
@@ -30,6 +33,7 @@ public class StudyController {
     public void studyFormInitBInder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(studyFormValidator);
     }
+
     @GetMapping("/new-Study")
     public String newStudForm(@CurrentUser Account account, Model model) {
         model.addAttribute("account", account);
@@ -37,15 +41,23 @@ public class StudyController {
         return "study/form";
     }
 
+    @GetMapping("/study/{path}")
+    public String viewStudy(@CurrentUser Account account, @PathVariable String path, Model model) {
+        model.addAttribute(account);
+        model.addAttribute(studyRepository.findByPath(path));
+        return "study/view";
+    }
+
     @PostMapping("/new-study")
-    public String newStudySubmit(@CurrentUser Account account, @Valid StudyForm studyForm,
-        Errors errors) {
+    public String newStudySubmit(
+            @CurrentUser Account account, @Valid StudyForm studyForm, Errors errors) {
         if (errors.hasErrors()) {
             return "study/form";
         }
 
-        Study newStudy = studyService.createNewStudy(modelMapper.map(studyForm, Study.class),
-            account);
+        Study newStudy =
+                studyService.createNewStudy(modelMapper.map(studyForm, Study.class), account);
+        // PostMapping redirect Prg패턴
         return "redirect:/study/" + URLEncoder.encode(newStudy.getPath(), StandardCharsets.UTF_8);
     }
 }

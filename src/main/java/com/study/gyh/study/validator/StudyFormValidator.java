@@ -1,3 +1,4 @@
+/* (C)2024 */
 package com.study.gyh.study.validator;
 
 import com.study.gyh.study.StudyRepository;

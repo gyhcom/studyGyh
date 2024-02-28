@@ -1,9 +1,11 @@
+/* (C)2024 */
 package com.study.gyh.study.form;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+
 @Data
 public class StudyForm {
 
@@ -20,6 +22,5 @@ public class StudyForm {
     @Length(max = 100)
     private String shortDescription;
 
-    @NotBlank
-    private String fullDescription;
+    @NotBlank private String fullDescription;
 }

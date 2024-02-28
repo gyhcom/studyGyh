@@ -1,3 +1,4 @@
+/* (C)2024 */
 package com.study.gyh.study;
 
 import com.study.gyh.domain.Account;
@@ -11,7 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class StudyService {
 
-    private final StudyRepository studyRepository;;
+    private final StudyRepository studyRepository;
+    ;
 
     public Study createNewStudy(Study study, Account account) {
         Study newStudy = studyRepository.save(study);
