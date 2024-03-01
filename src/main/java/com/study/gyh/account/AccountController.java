@@ -3,7 +3,6 @@ package com.study.gyh.account;
 
 import com.study.gyh.domain.Account;
 import javax.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -16,12 +15,20 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequiredArgsConstructor
 public class AccountController {
 
     private final SignUpFormValidator signUpFormValidator;
     private final AccountService accountService;
     private final AccountRepository accountRepository;
+
+    public AccountController(
+            SignUpFormValidator signUpFormValidator,
+            AccountService accountService,
+            AccountRepository accountRepository) {
+        this.signUpFormValidator = signUpFormValidator;
+        this.accountService = accountService;
+        this.accountRepository = accountRepository;
+    }
 
     @InitBinder("signUpForm")
     public void initBinder(WebDataBinder webDataBinder) {
