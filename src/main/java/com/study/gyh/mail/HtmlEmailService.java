@@ -1,3 +1,4 @@
+/* (C)2024 */
 package com.study.gyh.mail;
 
 import javax.mail.MessagingException;
@@ -13,21 +14,24 @@ import org.springframework.stereotype.Component;
 @Profile("dev")
 @Component
 @RequiredArgsConstructor
-public class HtmlEmailService implements EmailService{
+public class HtmlEmailService implements EmailService {
 
     private final JavaMailSender javaMailSender;
+
     @Override
     public void sendEmail(EmailMessage emailMessage) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        try{
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+        try {
+            MimeMessageHelper mimeMessageHelper =
+                    new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setTo(emailMessage.getTo());
             mimeMessageHelper.setSubject(emailMessage.getSubject());
             mimeMessageHelper.setText(emailMessage.getMessage(), true);
             log.info("sent email {}", emailMessage.getMessage());
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            log.error("failed to send email",e);
+            log.error("failed to send email", e);
+            throw new RuntimeException(e);
         }
     }
 }

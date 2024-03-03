@@ -41,32 +41,37 @@ public class StudyController {
         return "study/form";
     }
 
-
     @PostMapping("/new-study")
     public String newStudySubmit(
-        @CurrentUser Account account, @Valid StudyForm studyForm, Errors errors) {
+            @CurrentUser Account account, @Valid StudyForm studyForm, Errors errors, Model model) {
         if (errors.hasErrors()) {
+            model.addAttribute(account);
             return "study/form";
         }
 
         Study newStudy =
-            studyService.createNewStudy(modelMapper.map(studyForm, Study.class), account);
+                studyService.createNewStudy(modelMapper.map(studyForm, Study.class), account);
         // PostMapping redirect Prg패턴
         return "redirect:/study/" + URLEncoder.encode(newStudy.getPath(), StandardCharsets.UTF_8);
     }
 
     @GetMapping("/study/{path}")
     public String viewStudy(@CurrentUser Account account, @PathVariable String path, Model model) {
+        Study study = studyService.getStudy(path);
+        if (study == null) {
+            throw new IllegalArgumentException();
+        }
         model.addAttribute(account);
-        model.addAttribute(studyRepository.findByPath(path));
+        model.addAttribute(study);
         return "study/view";
     }
 
     @GetMapping("/study/{path}/members")
-    public String viewStudyMembers(@CurrentUser Account account, @PathVariable String path,
-        Model model) {
+    public String viewStudyMembers(
+            @CurrentUser Account account, @PathVariable String path, Model model) {
+        Study study = studyService.getStudy(path);
         model.addAttribute(account);
-        model.addAttribute(studyRepository.findByPath(path));
+        model.addAttribute(study);
         return "study/members";
     }
 }

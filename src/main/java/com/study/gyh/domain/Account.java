@@ -73,8 +73,8 @@ public class Account {
 
     @ManyToMany private Set<Tag> tags = new HashSet<>();
 
-    @ManyToMany
-    private Set<Zone> zones = new HashSet<>();
+    @ManyToMany private Set<Zone> zones = new HashSet<>();
+
     public void generateEmailCheckToken() {
         this.emailCheckToken = UUID.randomUUID().toString();
         this.emailCheckTokenGeneratedAt = LocalDateTime.now();
@@ -93,4 +93,7 @@ public class Account {
         return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusMinutes(5));
     }
 
+    public boolean isManagerOf(Study study) {
+        return study.getManagers().contains(this);
+    }
 }
