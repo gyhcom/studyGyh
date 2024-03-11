@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -20,7 +21,7 @@ public class ZoneService {
 
     private final ZoneRepository zoneRepository;
 
-    // @PostConstruct
+    @PostConstruct
     public void initZoneData() throws IOException {
         if (zoneRepository.count() == 0) {
             Resource resource = new ClassPathResource("zone.csv");
