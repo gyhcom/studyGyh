@@ -93,4 +93,22 @@ public class Account {
         return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusMinutes(5));
     }
 
+    public boolean isManagerOf(Study study) {
+         /*
+
+            한참 검색해보았다.. 이것이 무엇인가 결국 호출한 값을 가지고 현재 Account가 Study의 관리자인지
+            확인하는 부분이다.
+
+            isManagerOf 메서드는 주어진 UserAccount 객체가 해당 Study 객체의 관리자인지 여부를 확인하는 역할을 합니다.
+            구체적으로 말하자면, isManagerOf 메서드는 다음을 수행합니다:
+
+            메서드에 전달된 UserAccount 객체를 사용하여 해당 사용자가 Study 객체의 관리자인지 확인합니다.
+            managers 집합에 사용자의 계정이 포함되어 있는지를 확인합니다.
+            만약 사용자의 계정이 managers 집합에 포함되어 있다면 true를 반환하고, 그렇지 않으면 false를 반환합니다.
+
+            따라서 isManager 메서드를 호출하면 해당 UserAccount 객체가 관리자인지 여부를 확인할 수 있습니다.
+
+         */
+        return study.getManagers().contains(this);
+    }
 }
