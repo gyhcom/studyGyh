@@ -39,4 +39,16 @@ public class StudyService {
 
         return study;
     }
+
+    public void enableStudybanner(Study study) {
+        study.setUseBanner(true);
+    }
+
+    public void disableStudybanner(Study study) {
+        study.setUseBanner(false);
+    }
+
+    public void updateSstudyImage(Study study, String image) {
+        study.setImage(image);
+    }
 }
