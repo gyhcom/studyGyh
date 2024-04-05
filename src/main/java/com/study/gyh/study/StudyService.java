@@ -3,7 +3,9 @@ package com.study.gyh.study;
 
 import com.study.gyh.domain.Account;
 import com.study.gyh.domain.Study;
+import com.study.gyh.study.form.StudyDescriptionForm;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudyService {
 
     private final StudyRepository studyRepository;
-    ;
+
+    private final ModelMapper modelMapper;
 
     public Study createNewStudy(Study study, Account account) {
         Study newStudy = studyRepository.save(study);
@@ -50,5 +53,9 @@ public class StudyService {
 
     public void updateSstudyImage(Study study, String image) {
         study.setImage(image);
+    }
+
+    public void updateStudyDescription(Study study, StudyDescriptionForm studyDescriptionForm) {
+        modelMapper.map(studyDescriptionForm, study);
     }
 }
