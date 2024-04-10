@@ -24,7 +24,7 @@ import com.study.gyh.domain.Account;
 import com.study.gyh.domain.Tag;
 import com.study.gyh.domain.Zone;
 import com.study.gyh.mail.EmailService;
-import com.study.gyh.settings.form.TagForm;
+import com.study.gyh.tag.TagForm;
 import com.study.gyh.settings.form.ZoneForm;
 import com.study.gyh.tag.TagRepository;
 import com.study.gyh.zone.ZoneRepository;

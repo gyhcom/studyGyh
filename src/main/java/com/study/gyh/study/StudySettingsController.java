@@ -7,8 +7,11 @@ import com.study.gyh.account.CurrentUser;
 import com.study.gyh.domain.Account;
 import com.study.gyh.domain.Study;
 import com.study.gyh.domain.Tag;
+import com.study.gyh.domain.Zone;
+import com.study.gyh.tag.TagForm;
 import com.study.gyh.study.form.StudyDescriptionForm;
 import com.study.gyh.tag.TagRepository;
+import com.study.gyh.tag.TagService;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -16,13 +19,16 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -33,7 +39,7 @@ public class StudySettingsController {
     private final StudyService studyService;
     private final ModelMapper modelMapper;
     private final TagRepository tagRepository;
-
+    private final TagService tagService;
     private final ObjectMapper objectMapper;
 
     @GetMapping("/description")
@@ -119,8 +125,43 @@ public class StudySettingsController {
         return "study/settings/tags";
     }
 
+    @PostMapping("/tags/add")
+    @ResponseBody
+    public ResponseEntity addTag(@CurrentUser Account account, @PathVariable String path,
+        @RequestBody TagForm tagForm) {
+        Study study = studyService.getStudyToUpdate(account, path);
+        Tag tag = tagService.findOrCreateNew(tagForm.getTagTitle());
+        studyService.addTag(study, tag);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/tags/remove")
+    @ResponseBody
+    public ResponseEntity removeTag(@CurrentUser Account account, @PathVariable String path,
+        @RequestBody TagForm tagForm) {
+        Study study = studyService.getStudyToUpdate(account, path);
+        Tag tag = tagRepository.findByTitle(tagForm.getTagTitle());
+        if (tag == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        studyService.removeTag(study, tag);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/zones")
+    public String studyZonesForm(@CurrentUser Account account, @PathVariable String path, Model model)
+        throws JsonProcessingException {
+        Study study = studyService.getStudyToUpdate(account, path);
+        model.addAttribute(account);
+        model.addAttribute(path);
+        model.addAttribute("zones", study.getZones().stream()
+            .map(Zone::toString).collect(Collectors.toList()));
+
+    }
 
     private String getPath(String path) {
         return URLEncoder.encode(path, StandardCharsets.UTF_8);
     }
+
 }

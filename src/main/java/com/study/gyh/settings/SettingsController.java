@@ -12,7 +12,7 @@ import com.study.gyh.settings.form.NicknameForm;
 import com.study.gyh.settings.form.Notifications;
 import com.study.gyh.settings.form.PasswordForm;
 import com.study.gyh.settings.form.Profile;
-import com.study.gyh.settings.form.TagForm;
+import com.study.gyh.tag.TagForm;
 import com.study.gyh.settings.form.ZoneForm;
 import com.study.gyh.settings.validator.NicknameValidator;
 import com.study.gyh.settings.validator.PasswordFormValidator;

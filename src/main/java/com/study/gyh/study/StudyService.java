@@ -3,6 +3,7 @@ package com.study.gyh.study;
 
 import com.study.gyh.domain.Account;
 import com.study.gyh.domain.Study;
+import com.study.gyh.domain.Tag;
 import com.study.gyh.study.form.StudyDescriptionForm;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -57,5 +58,13 @@ public class StudyService {
 
     public void updateStudyDescription(Study study, StudyDescriptionForm studyDescriptionForm) {
         modelMapper.map(studyDescriptionForm, study);
+    }
+
+    public void addTag(Study study, Tag tag) {
+        study.getTags().add(tag);
+    }
+
+    public void removeTag(Study study, Tag tag) {
+        study.getTags().remove(tag);
     }
 }

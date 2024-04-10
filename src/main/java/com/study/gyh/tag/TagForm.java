@@ -1,5 +1,5 @@
 /* (C)2024 */
-package com.study.gyh.settings.form;
+package com.study.gyh.tag;
 
 import lombok.Data;
 
