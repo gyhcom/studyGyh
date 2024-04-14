@@ -27,6 +27,8 @@ public class ZoneService {
             Resource resource = new ClassPathResource("zone.csv");
             List<Zone> zoneList =
                     Files.readAllLines(resource.getFile().toPath(), StandardCharsets.UTF_8).stream()
+                            // stream을 이용
+                            // 중간연산 map
                             .map(
                                     line -> {
                                         String[] split = line.split(",");
@@ -37,7 +39,7 @@ public class ZoneService {
                                                 .build();
                                     })
                             .collect(Collectors.toList());
-
+            // 최종연산 리스트로
             zoneRepository.saveAll(zoneList);
         }
     }
