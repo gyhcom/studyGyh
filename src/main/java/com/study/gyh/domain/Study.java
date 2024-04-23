@@ -22,8 +22,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NamedEntityGraph(name = "Study.withAllRelations", attributeNodes = { @NamedAttributeNode("tags"),
-    @NamedAttributeNode("zones"), @NamedAttributeNode("managers"), @NamedAttributeNode("member")})
+@NamedEntityGraph(name = "Study.withAllRelations", attributeNodes = {
+    @NamedAttributeNode("tags"),
+    @NamedAttributeNode("zones"),
+    @NamedAttributeNode("managers"),
+    @NamedAttributeNode("member")})
+@NamedEntityGraph(name = "Study.withZonesAndManagers", attributeNodes = {
+    @NamedAttributeNode("zones"),
+    @NamedAttributeNode("managers")})
 @Entity
 @Getter
 @Setter
