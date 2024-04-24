@@ -193,6 +193,31 @@ public class StudySettingsController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/zones/remove")
+    @ResponseBody
+    public ResponseEntity removeZone(@CurrentUser Account account, @PathVariable String path,
+        @RequestBody ZoneForm zoneForm) {
+        Study study = studyService.getStudyToUpdateZone(account, path);
+        Zone zone = zoneRepository.findByCityAndProvince(zoneForm.getCityName(),
+            zoneForm.getProvinceName());
+        if (zone == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        studyService.removeZone(study, zone);
+        return ResponseEntity.ok().build();
+
+    }
+
+    @GetMapping("/study")
+    public String studySettingForm(@CurrentUser Account account, @PathVariable String path,
+        Model model) {
+        Study study = studyService.getStudyToUpdate(account, path);
+        model.addAttribute(account);
+        model.addAttribute(study);
+        return "study/settings/study";
+    }
+
     private String getPath(String path) {
         return URLEncoder.encode(path, StandardCharsets.UTF_8);
     }

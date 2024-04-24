@@ -89,4 +89,8 @@ public class StudyService {
     public void addZone(Study study, Zone zone) {
         study.getZones().add(zone);
     }
+
+    public void removeZone(Study study, Zone zone) {
+        study.getZones().remove(zone);
+    }
 }
