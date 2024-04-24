@@ -38,6 +38,7 @@ public class ZoneService {
                                                 .province(split[2])
                                                 .build();
                                     })
+                            .distinct()
                             .collect(Collectors.toList());
             // 최종연산 리스트로
             zoneRepository.saveAll(zoneList);
