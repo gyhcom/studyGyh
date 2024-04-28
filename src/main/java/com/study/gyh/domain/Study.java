@@ -30,6 +30,9 @@ import lombok.Setter;
 @NamedEntityGraph(name = "Study.withZonesAndManagers", attributeNodes = {
     @NamedAttributeNode("zones"),
     @NamedAttributeNode("managers")})
+@NamedEntityGraph(name = "Study.withManagers", attributeNodes = {
+    @NamedAttributeNode("zones"),
+    @NamedAttributeNode("managers")})
 @Entity
 @Getter
 @Setter
@@ -96,5 +99,37 @@ public class Study {
 
     public boolean isManager(UserAccount userAccount) {
         return this.managers.contains(userAccount.getAccount());
+    }
+
+    public void publish() {
+        if (!this.closed && !this.published) {
+            this.published = true;
+            this.publishedDateTime = LocalDateTime.now();
+        }else{
+            throw new RuntimeException(("스터디를 공개 할수 없는 상태입니다. 스터디를 이미 공개했거나 종료했습니다."));
+        }
+    }
+
+    public void close() {
+        if (this.published && !this.closed) {
+            this.closed = true;
+            this.closedDateTime = LocalDateTime.now();
+        }else{
+            throw new RuntimeException(("스터디를 종료 할수 없는 상태입니다. 스터디를 이미 종료했거나 종료했습니다."));
+        }
+    }
+
+    public boolean canUpdateRecruiting() {
+        return this.published && this.recruitingUpdateDateTime == null
+            || this.recruitingUpdateDateTime.isBefore(LocalDateTime.now().minusHours(1));
+    }
+
+    public void startRecruit() {
+        if (canUpdateRecruiting()) {
+            this.recruiting = true;
+            this.recruitingUpdateDateTime = LocalDateTime.now();
+        }else{
+            throw new RuntimeException("인원 모집을 시작할수 없습니다. 스터디를 공개하거나 한 시간 뒤 다시 시도하세요");
+        }
     }
 }

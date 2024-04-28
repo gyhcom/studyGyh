@@ -93,4 +93,23 @@ public class StudyService {
     public void removeZone(Study study, Zone zone) {
         study.getZones().remove(zone);
     }
+
+    public Study getStudyToUpdateStatus(Account account, String path) {
+        Study study = studyRepository.findStudyWIthManagersByPath(path);
+        checkIfExistingStudy(path, study);
+        checkIfManager(account, study);
+        return study;
+    }
+
+    public void publish(Study study) {
+        study.publish();
+    }
+
+    public void close(Study study) {
+        study.close();
+    }
+
+    public void startRecruit(Study study) {
+        study.startRecruit();
+    }
 }
