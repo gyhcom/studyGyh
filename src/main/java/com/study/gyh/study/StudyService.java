@@ -1,6 +1,8 @@
 /* (C)2024 */
 package com.study.gyh.study;
 
+import static com.study.gyh.study.form.StudyForm.VALID_PATH_PATTERN;
+
 import com.study.gyh.domain.Account;
 import com.study.gyh.domain.Study;
 import com.study.gyh.domain.Tag;
@@ -111,5 +113,21 @@ public class StudyService {
 
     public void startRecruit(Study study) {
         study.startRecruit();
+    }
+
+    public void stopRecruit(Study study) {
+        study.stopRecruit();
+    }
+
+    public boolean isValidPath(String newPath) {
+        if (!newPath.matches(VALID_PATH_PATTERN)) {
+            return false;
+        }
+
+        return !studyRepository.existsByPath(newPath);
+    }
+
+    public void updateStudyPath(Study study, String newPath) {
+        study.setPath(newPath);
     }
 }

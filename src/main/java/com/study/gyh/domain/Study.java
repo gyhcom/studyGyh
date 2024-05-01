@@ -132,4 +132,13 @@ public class Study {
             throw new RuntimeException("인원 모집을 시작할수 없습니다. 스터디를 공개하거나 한 시간 뒤 다시 시도하세요");
         }
     }
+
+    public void stopRecruit() {
+        if (canUpdateRecruiting()) {
+            this.recruiting =false;
+            this.recruitingUpdateDateTime = LocalDateTime.now();
+        } else{
+            throw new RuntimeException("인원 모집을 멈출수 없습니다. 스터디를 공개하거나 한 시간 뒤 다시 시도하세요");
+        }
+    }
 }
