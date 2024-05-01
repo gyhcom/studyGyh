@@ -350,4 +350,7 @@ class SettingsControllerTest {
         System.out.println("========="+redisTemplate.opsForValue().get("key"));
         System.out.println("========="+stringRedisTemplate.opsForValue().get("key"));
     }
+
+
+
 }

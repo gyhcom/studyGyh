@@ -35,7 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/email-login",
                         "/check-email-login",
                         "/test",
-                        "/login-by-email")
+                        "/login-by-email",
+                        "/h2-console")
                 .permitAll()
                 .mvcMatchers(HttpMethod.GET, "/profile/*")
                 .permitAll()
