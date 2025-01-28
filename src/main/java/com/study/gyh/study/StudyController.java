@@ -41,16 +41,15 @@ public class StudyController {
         return "study/form";
     }
 
-
     @PostMapping("/new-study")
     public String newStudySubmit(
-        @CurrentUser Account account, @Valid StudyForm studyForm, Errors errors) {
+            @CurrentUser Account account, @Valid StudyForm studyForm, Errors errors) {
         if (errors.hasErrors()) {
             return "study/form";
         }
 
         Study newStudy =
-            studyService.createNewStudy(modelMapper.map(studyForm, Study.class), account);
+                studyService.createNewStudy(modelMapper.map(studyForm, Study.class), account);
         // PostMapping redirect Prg패턴
         return "redirect:/study/" + URLEncoder.encode(newStudy.getPath(), StandardCharsets.UTF_8);
     }
@@ -63,8 +62,8 @@ public class StudyController {
     }
 
     @GetMapping("/study/{path}/members")
-    public String viewStudyMembers(@CurrentUser Account account, @PathVariable String path,
-        Model model) {
+    public String viewStudyMembers(
+            @CurrentUser Account account, @PathVariable String path, Model model) {
         model.addAttribute(account);
         model.addAttribute(studyRepository.findByPath(path));
         return "study/members";

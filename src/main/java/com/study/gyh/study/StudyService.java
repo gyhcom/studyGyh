@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudyService {
 
     private final StudyRepository studyRepository;
-
     private final ModelMapper modelMapper;
 
     public Study createNewStudy(Study study, Account account) {
@@ -46,7 +45,6 @@ public class StudyService {
             throw new AccessDeniedException("해당 기능을 사용할 수 없습니다.");
         }
     }
-
 
     private Study getStudy(String path) {
         Study study = this.studyRepository.findByPath(path);
@@ -129,5 +127,16 @@ public class StudyService {
 
     public void updateStudyPath(Study study, String newPath) {
         study.setPath(newPath);
+    }
+
+    public void updateStudyTitle(Study study, String newTitle) {
+        study.setTitle(newTitle);
+    }
+
+    public void remove(Study study) {
+        if (study.isRemoveable()) {
+            studyRepository.delete(study);
+        }
+        throw new IllegalArgumentException("스터디를 삭제할 수 없습니다.");
     }
 }

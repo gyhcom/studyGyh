@@ -1,3 +1,4 @@
+/* (C)2024 */
 package com.study.gyh.zone;
 
 import com.study.gyh.domain.Zone;
@@ -20,8 +21,10 @@ public class ZoneForm {
     }
 
     public Zone getZone() {
-        return Zone.builder().city(this.getCityName())
-            .localNameOfCity(this.getLocalNameOfCity())
-            .province(this.getProvinceName()).build();
+        return Zone.builder()
+                .city(this.getCityName())
+                .localNameOfCity(this.getLocalNameOfCity())
+                .province(this.getProvinceName())
+                .build();
     }
 }
