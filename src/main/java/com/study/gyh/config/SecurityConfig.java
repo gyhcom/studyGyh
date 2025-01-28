@@ -18,7 +18,6 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AccountService accountService;

@@ -1,3 +1,4 @@
+/* (C)2024 */
 package com.study.gyh.study.form;
 
 import javax.validation.constraints.NotBlank;
@@ -13,6 +14,5 @@ public class StudyDescriptionForm {
     @Length(max = 100)
     private String shortDescription;
 
-    @NotBlank
-    private String fullDescription;
+    @NotBlank private String fullDescription;
 }
